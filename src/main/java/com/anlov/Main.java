@@ -8,7 +8,7 @@ public class Main {
 
     }
     public static void printThreeWords() {
-        System.out.println("Orange\nBanana\nApple");
+        System.out.println("Orange\n" + "Banana\n" + "Apple");
 
     }
 
