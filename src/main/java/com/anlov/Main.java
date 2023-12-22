@@ -85,7 +85,6 @@ public class Main{
             }
             System.out.println();
         }
-
     }
     // 10 задание
     public static int[] returnArray(int len,int initialValue) {
