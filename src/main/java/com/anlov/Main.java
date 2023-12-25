@@ -1,5 +1,4 @@
 package com.anlov;
-
 import java.util.Arrays;
 
 public class Main {
