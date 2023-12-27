@@ -15,14 +15,11 @@ public class Main {
         squareArr();
         System.out.println(Arrays.toString(returnArray(5, 7)));
     }
-
     // 1 задание
     public static boolean trust(int a, int b) {
         int c = a + b;
         return c >= 10 && c <= 20;
-
     }
-
     // 2 задание
     public static void posNeg(int num) {
         if (num >= 0) {
@@ -31,11 +28,9 @@ public class Main {
             System.out.println("Вы ввели отрицательное число.");
         }
     }
-
     // 3 задание
     public static boolean checkNum(int number) {
         return number < 0;
-
     }
 
     // 4 задание
@@ -44,12 +39,10 @@ public class Main {
             System.out.println(text);
         }
     }
-
     // 5 задание
     public static boolean leapYear(int year) {
         return ((year % 4 == 0) && (year % 100 != 0)) || year % 400 == 0;
     }
-
     // 6 задание
     public static int[] changeNum(int[] castArray) {
         for (int i = 0; i < castArray.length; i++) {
@@ -61,7 +54,6 @@ public class Main {
         }
         return castArray;
     }
-
     // 7 задание
     public static void lengthArr() {
         int[] array = new int[100];
@@ -70,7 +62,6 @@ public class Main {
         }
         System.out.println(Arrays.toString(array));
     }
-
     // 8 задание
     public static void multyArr() {
         int[] multiplication = new int[]{1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1};
@@ -79,7 +70,6 @@ public class Main {
         }
         System.out.println(Arrays.toString(multiplication));
     }
-
     // 9 задание
     public static void squareArr() {
         int count = 7;
@@ -95,7 +85,6 @@ public class Main {
             System.out.println();
         }
     }
-
     // 10 задание
     public static int[] returnArray(int len, int initialValue) {
         int[] newArray = new int[len];
