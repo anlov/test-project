@@ -6,5 +6,11 @@ public class Park {
         private String infoAttractions;
         private String timeWork;
         private double costAttractions;
+        public Attractions(String infoAttractions,String timeWork,double costAttractions) {
+            this.infoAttractions = infoAttractions;
+            this.timeWork = timeWork;
+            this.costAttractions = costAttractions;
+
+        }
     }
 }
