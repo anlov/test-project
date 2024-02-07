@@ -1,22 +1,23 @@
 package com.anlov;
 
-import org.junit.jupiter.api.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.util.List;
 
-public class AppTest {
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.*;
+
+
+public class AppTest {
     WebDriver driver;
     WebDriverWait wait;
 
@@ -31,6 +32,7 @@ public class AppTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.get("https://www.mts.by/");
         driver.findElement(By.xpath("//button[@id='cookie-agree']")).click();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     @AfterEach
@@ -39,53 +41,118 @@ public class AppTest {
     }
 
     @Test
-    @DisplayName("Проверить название блока")
-    void checkBlockName() {
-        WebElement nameOfBlogs = driver.findElement(By.xpath
-                ("//div[@class='pay__wrapper']/h2"));
-        assertEquals("Онлайн пополнение\nбез комиссии", nameOfBlogs.getText());
+    @DisplayName("Проверить надписи в незаполненных полях каждого варианта оплаты услуги")
+    void checkText() {
+        final String SUM = "Сумма";
+        final String EMAIL = "E-mail для отправки чека";
+        String phoneField = getTextFromWebElement("//input[@id='connection-phone']",
+                "placeholder");
+        String sumField = getTextFromWebElement("//input[@id='connection-sum']",
+                "placeholder");
+        String emailField = getTextFromWebElement("//input[@id='connection-email']",
+                "placeholder");
+        assertAll(
+                () -> assertEquals("Номер телефона", phoneField),
+                () -> assertEquals(SUM, sumField),
+                () -> assertEquals(EMAIL, emailField)
+        );
+        String internetField = getTextFromWebElement("//input[@id='internet-phone']",
+                "placeholder");
+        String internetSum = getTextFromWebElement("//input[@id='internet-sum']",
+                "placeholder");
+        String internetEmail = getTextFromWebElement("//input[@id='internet-email']",
+                "placeholder");
+        assertAll(
+                () -> assertEquals("Номер абонента", internetField),
+                () -> assertEquals(SUM, internetSum),
+                () -> assertEquals(EMAIL, internetEmail)
+        );
+        String instalmentNum = getTextFromWebElement("//input[@id='score-instalment']",
+                "placeholder");
+        String instalmentSum = getTextFromWebElement("//input[@id='instalment-sum']",
+                "placeholder");
+        String instalmentEmail = getTextFromWebElement("//input[@id='instalment-email']",
+                "placeholder");
+        assertAll(
+                () -> assertEquals("Номер счета на 44", instalmentNum),
+                () -> assertEquals(SUM, instalmentSum),
+                () -> assertEquals(EMAIL, instalmentEmail)
+        );
+        String arrearNum = getTextFromWebElement("//input[@id='score-arrears']",
+                "placeholder");
+        String arrearSum = getTextFromWebElement("//input[@id='arrears-sum']",
+                "placeholder");
+        String arrearEmail = getTextFromWebElement("//input[@id='arrears-email']",
+                "placeholder");
+        assertAll(
+                () -> assertEquals("Номер счета на 2073", arrearNum),
+                () -> assertEquals(SUM, arrearSum),
+                () -> assertEquals(EMAIL, arrearEmail)
+        );
     }
 
     @Test
-    @DisplayName("Проверить наличие логотипов платёжных систем")
-    void checkLogos() {
-        List<WebElement> logos = driver.findElements(By.xpath
-                ("//div[@class='pay__partners']/ul/li/img"));
-        logos.forEach(l -> assertTrue(l.isDisplayed(), l.getAttribute("alt")));
-
-    }
-
-    @Test
-    @DisplayName("Проверить работу ссылки -'Подробнее о сервисе'")
-    void checkLink() {
-        String link = "https://www.mts.by/help/poryadok-oplaty-i-bezopasnost-internet-platezhey/";
-        WebElement linkCheck = driver.findElement(By.xpath
-                ("//div[@class='pay__wrapper']/a"));
-        assertTrue(linkCheck.isEnabled());
-        assertTrue(linkCheck.isDisplayed());
-        String linkAttribute = linkCheck.getAttribute("href");
-        driver.get(linkAttribute);
-        assertEquals(link, linkAttribute);
-    }
-
-    @Test
-    @DisplayName("Проверить заполнение полей и работу кнопки 'Продолжить'")
-    void checkContinue() {
+    @DisplayName("Проверить корректность отображения данных")
+    void checkForm() {
         final String NUMBER = "297777777";
-        final String SUMMA = "25";
+        final double SUMMA = 25.0;
+        final String SUMMA_STRING = "25";
         final String EMAIL = "aston.777@gmai.com";
+
         driver.findElement(By.xpath("//input[@id='connection-phone']")).sendKeys(NUMBER);
-        driver.findElement(By.xpath("//input[@id='connection-sum']")).sendKeys(SUMMA);
+        driver.findElement(By.xpath("//input[@id='connection-sum']")).sendKeys(SUMMA_STRING);
         driver.findElement(By.xpath("//input[@id='connection-email']")).sendKeys(EMAIL);
         driver.findElement(By.xpath("//form[@id='pay-connection']/button")).click();
-
-        wait = new WebDriverWait(driver, Duration.ofSeconds(7));
-        WebElement iframe = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath
-                ("//iframe[@class='bepaid-iframe']")));
+        WebElement iframe = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("//iframe[@class='bepaid-iframe']")));
         driver.switchTo().frame(iframe);
-        WebElement payContinue = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath
-                ("//div[@class='app-wrapper__content']")));
 
-        assertTrue(payContinue.isDisplayed());
+        Double amount = getDoubleFromWebElement(
+                "//p[@class='header__payment-amount']", " ", 0);
+        String info = getTextFromWebElement(
+                "//p[@class='header__payment-info']", "375", 1);
+        Double sum = getDoubleFromWebElement(
+                "//div[@class='card-page__card']/button", " ", 1);
+
+        String actualNum = getTextFromWebElement("//input[@id='cc-number']/..");
+        String validity = getTextFromWebElement("//input[@autocomplete='cc-exp']/..");
+        String code = getTextFromWebElement("//input[@name='verification_value']/..");
+        String fullName = getTextFromWebElement("//input[@autocomplete='cc-name']/..");
+
+        List<WebElement> logos = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                By.xpath("//input[@id='cc-number']/../following-sibling::div/.//img")
+        ));
+        assertAll(
+                () -> assertEquals(SUMMA, amount),
+                () -> assertEquals(SUMMA, sum),
+                () -> assertEquals(NUMBER, info),
+                () -> assertEquals("Номер карты", actualNum),
+                () -> assertEquals("Срок действия", validity),
+                () -> assertEquals("CVC", code),
+                () -> assertEquals("Имя держателя (как на карте)", fullName),
+                () -> logos.forEach(p -> assertTrue(p.isDisplayed()))
+        );
+    }
+
+    public String getTextFromWebElement(String xpath) {
+        return driver.findElement(By.xpath(xpath))
+                .getAttribute("innerText");
+    }
+
+    public String getTextFromWebElement(String xpath, String attributeName) {
+        return driver.findElement(By.xpath(xpath))
+                .getAttribute(attributeName);
+    }
+
+    public String getTextFromWebElement(String xpath, String regexp, int index) {
+        return driver.findElement(By.xpath(xpath))
+                .getAttribute("innerText")
+                .split(regexp)[index];
+    }
+
+    public Double getDoubleFromWebElement(String xpath, String regexp, int index) {
+        return Double.parseDouble(driver.findElement(By.xpath(xpath))
+                .getAttribute("innerText")
+                .split(regexp)[index]);
     }
 }
