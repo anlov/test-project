@@ -42,11 +42,11 @@ public class HomePage extends BasePage {
     }
 
     public Double getSelectedGoodsPrice(int index) {
-        return  Math.ceil(Double.parseDouble(selectPrices.get(index)) * 1.031);
+        return Double.parseDouble(selectPrices.get(index));
     }
 
     public double getSumOfGoods() {
-        return Math.ceil(selectPrices.stream().mapToDouble(Double::parseDouble).sum() * 1.031);
+        return selectPrices.stream().mapToDouble(Double::parseDouble).sum();
     }
 
     public int getCountOfGoods() {

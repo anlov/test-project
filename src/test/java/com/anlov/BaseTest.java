@@ -6,10 +6,10 @@ import com.anlov.pages.BaseElement;
 import com.anlov.pages.BasePage;
 import com.anlov.pages.BasketPage;
 import com.anlov.pages.HomePage;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterSuite;
+import org.testng.asserts.SoftAssert;
 
 public class BaseTest {
     protected static WebDriver driver = CommonActions.createDriver();
@@ -18,7 +18,9 @@ public class BaseTest {
     protected BasketPage basketPage = PageFactory.initElements(driver, BasketPage.class);
     protected BaseElement baseElement = PageFactory.initElements(driver, BaseElement.class);
 
-    @AfterEach
+    protected SoftAssert softAssert = new SoftAssert();
+
+    @AfterSuite(alwaysRun = true)
     public void quit() {
         if (Config.QUIT_BROWSER) {
             driver.quit();

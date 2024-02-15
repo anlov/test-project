@@ -1,6 +1,5 @@
 package com.anlov.pages;
 
-import com.anlov.pages.BasePage;
 import org.openqa.selenium.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,13 +20,12 @@ public class BasketPage extends BasePage {
         private static final By goodPrice = By.xpath("//div[@class='list-item__price-new']");
     }
 
-    public BasketPage nameOfGoods() {
+    public void nameOfGoods() {
         goodsOfBucket = driver.findElements(Good.goodName).stream()
                 .map(WebElement::getText).collect(Collectors.toList());
         pricesOfBucketGoods = driver.findElements(Good.goodPrice).stream()
                 .map(p -> p.getText().split("₽")[0].replaceAll("\\s", ""))
                 .collect(Collectors.toList());
-        return this;
     }
 
     public double getGoodsPrice(int index) {
